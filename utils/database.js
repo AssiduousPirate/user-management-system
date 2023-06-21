@@ -1,0 +1,33 @@
+const mysql = require("mysql2")
+const util = require("util")
+const mysqlPromise = require("mysql2/promise")
+require("dotenv").config()
+
+const readPool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB,
+    password: 'DBamanSQL123#$%', //process.env.DB_PASSWORD,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    multipleStatements: true
+})
+
+const writePool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB,
+    password: 'DBamanSQL123#$%', //process.env.DB_PASSWORD,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    multipleStatements: true
+})
+
+readPool.query = util.promisify(readPool.query)
+writePool.query = util.promisify(writePool.query)
+
+module.exports = {
+    readPool, writePool
+}

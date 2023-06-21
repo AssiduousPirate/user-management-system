@@ -1,0 +1,264 @@
+swagger: "2.0"
+info:
+  description: |-
+     User Management System
+     HTTP Status:
+     200 (Success)
+     203 (Error)
+  version: 0.0.1
+  title: User Management System
+schemes:
+  - http
+paths:
+  /users/api/v1/get/users:
+    get:
+      summary: api to get users list
+      operationId: getUsers
+      tags:
+        - Users
+      consumes:
+        - application/json
+      parameters:
+        - $ref: "#/components/parameters/headerPlatform"
+        - $ref: "#/components/parameters/headerLanguage"
+        - in: query
+          name: user_id
+          type: number
+          description: please enter user_id
+        - in: query
+          name: page
+          type: number
+          required: true
+          description: page number minimum value will be 1
+        - in: query
+          name: limit
+          type: number
+          description: record per page you needed it is optional default set 10.
+        - in: query
+          name: text
+          type: string
+          description: search by owner name optional field.
+      responses:
+        "200":
+          description: get user details in response
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+
+  /users/api/v1/create/user:
+    post:
+      summary: Api to create users.
+      operationId: createUser.
+      tags:
+        - Users
+      consumes:
+        - application/json
+      parameters:
+        - $ref: "#/components/parameters/headerPlatform"
+        - $ref: "#/components/parameters/headerLanguage"
+        - in: formData
+          name: name
+          type: string
+          required: true
+        - in: formData
+          name: email
+          type: string
+          required: true
+        - in: formData
+          name: age
+          type: number
+          required: true
+        - in: formData
+          name: image
+          type: file
+          required: true
+        - in: formData
+          name: city
+          type: string
+          required: true
+      responses:
+        "200":
+          description: get user details in response
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+
+  /users/api/v1/update/user/{id}:
+    put:
+      summary: Api to update users.
+      operationId: updateUser.
+      tags:
+        - Users
+      consumes:
+        - application/json
+      parameters:
+        - $ref: "#/components/parameters/headerPlatform"
+        - $ref: "#/components/parameters/headerLanguage"
+        - in: path
+          name: id
+          type: number
+          required: true
+        - in: formData
+          name: name
+          type: string
+        - in: formData
+          name: email
+          type: string
+        - in: formData
+          name: age
+          type: number
+        - in: formData
+          name: image
+          type: file
+      responses:
+        "200":
+          description: update user record from user database
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+
+  /users/api/v1/delete/user/{id}:
+    delete:
+      summary: Api to delete user.
+      operationId: deleteUser.
+      tags:
+        - Users
+      consumes:
+        - application/json
+      parameters:
+        - $ref: "#/components/parameters/headerPlatform"
+        - $ref: "#/components/parameters/headerLanguage"
+        - in: path
+          name: id
+          type: number
+          required: true
+      responses:
+        "200":
+          description: delete user from records
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+
+parameters:
+  HeaderVersion:
+    name: version
+    in: header
+    description: App Version
+    required: true
+    type: string
+  HeaderPlatform:
+    name: platform
+    in: header
+    description: platform
+    required: true
+    type: string
+  HeaderLanguage:
+    name: language
+    in: header
+    description: language
+    required: true
+    type: string
+  HeaderAuth:
+    name: ssid
+    in: header
+    description: ssid
+    required: true
+    type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: "http://swagger.io"
+components:
+  ApiResponse:
+    required:
+      - success
+      - message
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+      data:
+        type: object
+  parameters:
+    headerLanguage:
+      name: language
+      in: header
+      required: true
+      schema:
+        type: string
+        default: en
+        enum:
+          - en
+    headerPlatform:
+      name: os
+      in: header
+      required: true
+      schema:
+        type: string
+        default: android
+        enum:
+          - ios
+          - android
+    headerVersion:
+      name: version
+      in: header
+      required: true
+      schema:
+        type: string
+        default: 1.0.0
+        pattern: '^[\d]+\.[\d]+\.[\d]+$'
+    queryPerPage:
+      in: query
+      name: perPage
+      description: number of records per page
+      allowEmptyValue: false
+      required: false
+      schema:
+        type: integer
+    queryPage:
+      in: query
+      name: page
+      description: page number
+      allowEmptyValue: false
+      required: false
+      schema:
+        type: integer
+  schemas:
+    ApiResponse:
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data: {}
+
+  responses:
+    BadRequestError:
+      description: Request fails validation or doesn't meet all conditions for request
+      content:
+        application/json:
+          schema:
+            example:
+              success: false
+              message: Validation failed
+              data: ""
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    nullable: true
+    NotFoundError:
+      description: Requested resource was not found
