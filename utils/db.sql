@@ -10,3 +10,12 @@ CREATE TABLE `user_management_system`.`users` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `user_management_system`.`exceptions` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `exception` VARCHAR(200) NOT NULL,
+    `function` VARCHAR(200) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL,
+    PRIMARY KEY (`id`)
+);
