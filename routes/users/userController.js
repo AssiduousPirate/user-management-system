@@ -8,7 +8,7 @@ class userController {
             let { text, user_id } = req.query
             let whereQuery = ''
             if (user_id) whereQuery += (!whereQuery.length ? `WHERE` : ` AND`) + ` \`id\` = ${user_id}`
-            if (text) whereQuery += (!whereQuery.length ? `WHERE` : ` AND`) + ` (\`name\` LIKE '%${text}%' OR \`email\` LIKE '%${text}%' OR \`city\` LIKE '%${text}%' OR \`age\` = '${text}')`
+            if (text) whereQuery += (!whereQuery.length ? `WHERE` : ` AND`) + ` (\`name\` LIKE '%${text}%' OR \`email\` LIKE '%${text}%' OR \`age\` = '${text}')`
             let counts = await readPool.query(`SELECT COUNT(*) FROM \`users\` ${whereQuery}`)
             counts = counts.length ? counts[0]["COUNT(*)"] : 0
             let items = await readPool.query(`SELECT * FROM \`users\` ${whereQuery} ORDER BY UNIX_TIMESTAMP(\`created_at\`) DESC LIMIT ?,?`,[(page - 1) * limit, limit])
